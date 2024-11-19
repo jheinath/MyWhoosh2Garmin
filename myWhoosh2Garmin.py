@@ -91,13 +91,21 @@ def get_fitfile_location() -> Path:
          )
         if target_path.is_dir():
             return target_path
-    # elif os.name == "Windows":  # Windows
-    #     home = Path(os.getenv("USERPROFILE"))
-    #     target_dir = "MyWhooshTechnologyService.MyWhoosh_"
-    #     for directory in home.iterdir():
-    #         target_path = directory / target_dir
-    #         if target_path.exists():
-    #             return target_path
+    elif os.name == "nt":  # Windows
+        base_path = Path.home() / "AppData" / "Local" / "Packages"
+        # Look for a folder starting with "MyWhooshTechnologyService.MyWhoosh_"
+        for directory in base_path.iterdir():
+            if directory.is_dir() and directory.name.startswith("MyWhooshTechnologyService.MyWhoosh_"):
+                target_path = (
+                        directory
+                        / "LocalCache"
+                        / "Local"
+                        / "MyWhoosh"
+                        / "Content"
+                        / "Data"
+                )
+                if target_path.is_dir():
+                    return target_path
     else:
         raise RuntimeError("Unsupported operating system")
 
