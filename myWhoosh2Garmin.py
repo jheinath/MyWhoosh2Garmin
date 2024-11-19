@@ -108,6 +108,7 @@ def get_fitfile_location() -> Path:
                     return target_path
     else:
         raise RuntimeError("Unsupported operating system")
+        return None
 
 
 FITFILE_LOCATION = get_fitfile_location()
