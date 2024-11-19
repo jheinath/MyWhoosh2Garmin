@@ -7,6 +7,8 @@ __pycache__/
 *.so
 
 .garth/
+.idea/
+MyWhooshFitBackup/
 *.log
 # Distribution / packaging
 .Python
