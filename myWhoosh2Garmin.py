@@ -50,8 +50,6 @@ def ensure_packages():
             print(f"Installing missing package: {package}")
             install_package(package)
 
-if __name__ == "__main__":
-    ensure_packages()
 
 import garth
 from garth.exc import GarthException, GarthHTTPError
