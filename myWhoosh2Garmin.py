@@ -57,8 +57,6 @@ import garth
 from garth.exc import GarthException, GarthHTTPError
 from fit_tool.fit_file import FitFile
 from fit_tool.fit_file_builder import FitFileBuilder
-from fit_tool.profile.messages.course_message import CourseNameField
-from fit_tool.profile.messages.workout_message import WorkoutMessage
 from fit_tool.profile.messages.file_creator_message import FileCreatorMessage
 from fit_tool.profile.messages.record_message import (
     RecordMessage,
@@ -108,8 +106,6 @@ def get_fitfile_location() -> Path:
 
 FITFILE_LOCATION = get_fitfile_location()
 
-import garth
-from garth.exc import GarthException, GarthHTTPError
 
 def get_credentials_for_garmin():
     username = input("Username: ")
@@ -202,18 +198,6 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
 
 # Cleanup the .fit file and save it with timestamp suffix
 def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
-    from fit_tool.fit_file import FitFile
-    from fit_tool.fit_file_builder import FitFileBuilder
-    from fit_tool.profile.messages.course_message import CourseNameField
-    from fit_tool.profile.messages.workout_message import WorkoutMessage
-    from fit_tool.profile.messages.file_creator_message import FileCreatorMessage
-    from fit_tool.profile.messages.record_message import (
-        RecordMessage,
-        RecordTemperatureField
-    )
-    from fit_tool.profile.messages.session_message import SessionMessage
-    from fit_tool.profile.messages.lap_message import LapMessage
-
     if fitfile_location.is_dir():
         logger.debug(f"Checking for .fit files in directory: {fitfile_location}")
         # Find all .fit files in the directory
@@ -231,7 +215,7 @@ def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
             logger.info(f"Cleaning up {new_file_path}")
             try:
                 cleanup_fit_file(fit_file, new_file_path)  # Clean and save with new filename
-                logger.info(f"Succesfully cleaned {fit_file.name} and saved the file as {new_file_path.name}.")
+                logger.info(f"Successfully cleaned {fit_file.name} and saved the file as {new_file_path.name}.")
                 return new_file_path
             except Exception as e:
                 logger.error(f"Failed to process {fit_file.name}: {e}")
