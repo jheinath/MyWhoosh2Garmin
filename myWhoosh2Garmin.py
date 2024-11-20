@@ -309,12 +309,6 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
                     if heart_rate_values
                     else 0
                 )
-            if not message.avg_power:
-                message.avg_power = (
-                    sum(power_values) / len(power_values)
-                    if power_values
-                    else 0
-                )
             cadence_values = []
             power_values = []
             heart_rate_values = []
