@@ -96,7 +96,7 @@ echo mywhoosh has finished, running Python script...
 python C:\Path\to\mywhoosh.py
 ```
 Windows .ps1 (PowerShell) file
-```bash
+```powershell
 # Start mywhoosh.exe (adjust with correct path)
 Start-Process "C:\Path\to\mywhoosh.exe"
 
