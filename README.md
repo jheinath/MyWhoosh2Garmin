@@ -10,8 +10,8 @@ Here're some of the project's best features:
 
 *   Finds the .fit files from your MyWhoosh installation.
 *   Fix the missing power & heart rate averages.
-*   Create a backup file to a folder you select.
 *   Removes the temperature.
+*   Create a backup file to a folder you select.
 *   Uploads the fixed .fit file to Garmin Connect.
 
 <h2>🛠️ Installation Steps:</h2>
