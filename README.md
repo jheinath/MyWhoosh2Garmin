@@ -183,6 +183,7 @@ python "C:\Path\to\mywhoosh.py"
 
 Technologies used in the project:
 
+* Neovim
 *   Garth
 *   tKinter
 *   Fit\_tool
