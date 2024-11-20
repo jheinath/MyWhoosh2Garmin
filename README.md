@@ -30,8 +30,87 @@ python3 myWhoosh2Garmin.py
 
 <p>6. Run the script when you're done riding or running</p>
 
-  
-  
+<h2>ℹ️ Automation tips</h2> 
+
+What if you want to automate the whole process:
+<h3>MacOS</h3>
+AppleScript
+
+```applescript
+-- Start mywhoosh.app
+tell application "mywhoosh"
+    activate
+end tell
+
+-- Wait until the application quits
+repeat while application "mywhoosh" is running
+    delay 1
+end repeat
+
+-- Run the Python script
+do shell script "python3 ~/path/to/mywhoosh.py"
+
+```
+Bash
+
+```bash
+#!/bin/bash
+
+# Path to the mywhoosh.app application
+APP_PATH="/Applications/mywhoosh.app"
+
+# Start the mywhoosh.app and wait for it to finish
+echo "Starting mywhoosh.app..."
+open -W "$APP_PATH"
+
+# Check if the application exited successfully
+if [ $? -eq 0 ]; then
+    echo "mywhoosh.app has finished. Now running Python script..."
+    # Run the Python script
+    python3 mywhoosh.py
+else
+    echo "mywhoosh.app encountered an error."
+    exit 1
+fi
+```
+<h3>Windows</h3>
+
+Windows .bat file
+```bash
+@echo off
+
+:: Start mywhoosh.exe (adjust with correct path)
+start "" "C:\Path\to\mywhoosh.exe"
+
+:: Wait for the application to finish
+echo Waiting for mywhoosh to finish...
+:loop
+tasklist /fi "imagename eq mywhoosh.exe" 2>NUL | find /I "mywhoosh.exe" >NUL
+if not errorlevel 1 (
+    timeout /t 5 /nobreak > NUL
+    goto loop
+)
+
+:: Once the app finishes, run the Python script
+echo mywhoosh has finished, running Python script...
+python C:\Path\to\mywhoosh.py
+```
+Windows .ps1 (PowerShell) file
+```bash
+# Start mywhoosh.exe (adjust with correct path)
+Start-Process "C:\Path\to\mywhoosh.exe"
+
+# Wait for the application to finish
+Write-Host "Waiting for mywhoosh to finish..."
+while (Get-Process "mywhoosh" -ErrorAction SilentlyContinue) {
+    Start-Sleep -Seconds 5
+}
+
+# Once the app finishes, run the Python script
+Write-Host "mywhoosh has finished, running Python script..."
+python C:\Path\to\mywhoosh.py
+```
+
 <h2>💻 Built with</h2>
 
 Technologies used in the project:
