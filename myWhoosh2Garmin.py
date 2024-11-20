@@ -28,9 +28,11 @@ from getpass import getpass
 from pathlib import Path
 import importlib.util
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+log_file_path = os.path.join(script_dir, "myWhoosh2Garmin.log")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler('myWhoosh2Garmin.log')
+file_handler = logging.FileHandler(log_file_path)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
