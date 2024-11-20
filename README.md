@@ -80,8 +80,21 @@ Windows .bat file
 ```bash
 @echo off
 
-:: Start mywhoosh.exe (adjust with correct path)
-start "" "C:\Path\to\mywhoosh.exe"
+:: Search for mywhoosh.exe and store the path in a variable
+for /r "C:\" %%i in (mywhoosh.exe) do (
+    set "MYWHOOSH_PATH=%%i"
+    goto :found
+)
+
+:: If not found, exit with a message
+echo mywhoosh.exe not found!
+exit /b 1
+
+:found
+echo Found mywhoosh.exe at %MYWHOOSH_PATH%
+
+:: Start mywhoosh.exe
+start "" "%MYWHOOSH_PATH%"
 
 :: Wait for the application to finish
 echo Waiting for mywhoosh to finish...
@@ -98,18 +111,30 @@ python C:\Path\to\mywhoosh.py
 ```
 Windows .ps1 (PowerShell) file
 ```powershell
-# Start mywhoosh.exe (adjust with correct path)
-Start-Process "C:\Path\to\mywhoosh.exe"
+# Search for mywhoosh.exe and store its path in a variable
+$mywhooshPath = Get-ChildItem -Path "C:\" -Filter "mywhoosh.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+
+# If not found, exit with an error message
+if (-not $mywhooshPath) {
+    Write-Host "mywhoosh.exe not found!"
+    exit 1
+}
+
+Write-Host "Found mywhoosh.exe at $($mywhooshPath.FullName)"
+
+# Start mywhoosh.exe
+Start-Process -FilePath $mywhooshPath.FullName
 
 # Wait for the application to finish
 Write-Host "Waiting for mywhoosh to finish..."
-while (Get-Process "mywhoosh" -ErrorAction SilentlyContinue) {
+while (Get-Process -Name "mywhoosh" -ErrorAction SilentlyContinue) {
     Start-Sleep -Seconds 5
 }
 
 # Once the app finishes, run the Python script
 Write-Host "mywhoosh has finished, running Python script..."
-python C:\Path\to\mywhoosh.py
+python "C:\Path\to\mywhoosh.py"
+
 ```
 
 <h2>💻 Built with</h2>
