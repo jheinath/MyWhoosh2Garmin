@@ -104,7 +104,7 @@ from fit_tool.profile.messages.lap_message import LapMessage
 
 TOKENS_PATH = Path(".garth")
 BACKUP_FOLDER = Path("MyWhooshFitBackup")
-MYWHOOSH_PREFIX = "MyWhooshTechnologyService.MyWhoosh_"
+MYWHOOSH_PREFIX_WINDOWS = "MyWhooshTechnologyService.MyWhoosh_"
 
 
 def get_fitfile_location() -> Path:
@@ -142,7 +142,7 @@ def get_fitfile_location() -> Path:
         base_path = Path.home() / "AppData" / "Local" / "Packages"
         for directory in base_path.iterdir():
             if (directory.is_dir() and 
-                    directory.name.startswith(MYWHOOSH_PREFIX)):
+                    directory.name.startswith(MYWHOOSH_PREFIX_WINDOWS)):
                 target_path = (
                         directory
                         / "LocalCache"
