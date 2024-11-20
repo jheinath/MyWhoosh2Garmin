@@ -19,6 +19,7 @@ import json
 import subprocess
 import sys
 import logging
+import re
 from typing import List
 import tkinter as tk
 from datetime import datetime
@@ -257,7 +258,7 @@ def authenticate_to_garmin():
     except GarthException as e:
         logger.info(f"Authentication error: {e}")
         sys.exit(1)
-        
+
 
 def calculate_avg(values: iter) -> int:
     """
@@ -270,7 +271,7 @@ def calculate_avg(values: iter) -> int:
         float: The average value or 0 if the list is empty.
     """
     return sum(values) / len(values) if values else 0
-    
+
 
 def append_value(values: List[int], message: object, field_name: str) -> None:
     """
@@ -335,9 +336,17 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
     builder.build().to_file(str(new_file_path))
     logger.info(f"Cleaned-up file saved as {new_file_path.name}")
 
-def get_most_recent_fit_file(fit_file_location: Path) -> Path:
-    """Returns the most recent .fit file in the directory."""
-    return max(fitfile_location.glob("*.fit"), key=lambda f: f.stat().st_mtime, default=None) or Path()
+def get_most_recent_fit_file(fitfile_location: Path) -> Path:
+    """Returns the most recent .fit file based on versioning in the filename."""
+    fit_files = fitfile_location.glob("MyNewActivity-*.fit")
+    fit_files = sorted(fit_files, key=lambda f: 
+                       tuple(map(int, re.findall(r'(\d+)', f.stem.split('-')[-1]))), reverse=True)
+    return fit_files[0] if fit_files else Path()
+
+def generate_new_filename(fit_file: Path) -> str:
+    """Generates a new filename with a timestamp."""
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    return f"{fit_file.stem}_{timestamp}.fit"
 
 def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
     """
@@ -351,33 +360,33 @@ def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
         Path: The path to the newly saved and cleaned .fit file, 
         or an empty Path if no .fit file is found or if the path is invalid.
     """
-    if fitfile_location.is_dir():
-        logger.debug(f"Checking for .fit files in directory: "
-                     f"{fitfile_location}")
-        fit_files = list(fitfile_location.glob("*.fit"))
-        if fit_files:
-            logger.debug("Found the following .fit files:")
-            fit_file = max(fit_files, key=lambda f: f.stat().st_mtime)
-            timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-            new_filename = f"{fit_file.stem}_{timestamp}.fit"
-            if not BACKUP_FITFILE_LOCATION.exists():
-                logger.error(f"{BACKUP_FITFILE_LOCATION} does not exist. "
-                             "Did you delete it?")
-            new_file_path = BACKUP_FITFILE_LOCATION / new_filename
-            logger.info(f"Cleaning up {new_file_path}")
-            try:
-                cleanup_fit_file(fit_file, new_file_path)  
-                logger.info(f"Successfully cleaned {fit_file.name}" 
-                            f"and saved the file as {new_file_path.name}.")
-                return new_file_path
-            except Exception as e:
-                logger.error(f"Failed to process {fit_file.name}: {e}")
-        else:
-            logger.info("No .fit files found.")
-            return Path()
-    else:
-        logger.info(f"The specified path is not a directory:" 
-                    f"{fitfile_location}")
+    if not fitfile_location.is_dir():
+        logger.info(f"The specified path is not a directory: {fitfile_location}")
+        return Path()
+
+    logger.debug(f"Checking for .fit files in directory: {fitfile_location}")
+    fit_file = get_most_recent_fit_file(fitfile_location)
+
+    if not fit_file:
+        logger.info("No .fit files found.")
+        return Path()
+
+    logger.debug(f"Found the most recent .fit file: {fit_file.name}")
+    new_filename = generate_new_filename(fit_file)
+
+    if not BACKUP_FITFILE_LOCATION.exists():
+        logger.error(f"{BACKUP_FITFILE_LOCATION} does not exist. Did you delete it?")
+        return Path()
+
+    new_file_path = BACKUP_FITFILE_LOCATION / new_filename
+    logger.info(f"Cleaning up {new_file_path}")
+
+    try:
+        cleanup_fit_file(fit_file, new_file_path)  
+        logger.info(f"Successfully cleaned {fit_file.name} and saved it as {new_file_path.name}.")
+        return new_file_path
+    except Exception as e:
+        logger.error(f"Failed to process {fit_file.name}: {e}")
         return Path()
 
 
