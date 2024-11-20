@@ -103,6 +103,7 @@ from fit_tool.profile.messages.lap_message import LapMessage
 
 TOKENS_PATH = Path(".garth")
 BACKUP_FOLDER = Path("MyWhooshFitBackup")
+MYWHOOSH_PREFIX = "MyWhooshTechnologyService.MyWhoosh_"
 
 
 def get_fitfile_location() -> Path:
@@ -133,13 +134,14 @@ def get_fitfile_location() -> Path:
         if target_path.is_dir():
             return target_path
         else:
-            logger.error(f"Target path {target_path} does not exist. Check your MyWhoosh installation.")
+            logger.error(f"Target path {target_path} does not exist. "
+                         "Check your MyWhoosh installation.")
             sys.exit(1)
     elif os.name == "nt":  # Windows
         base_path = Path.home() / "AppData" / "Local" / "Packages"
-        # Look for a folder starting with "MyWhooshTechnologyService.MyWhoosh_"
         for directory in base_path.iterdir():
-            if directory.is_dir() and directory.name.startswith("MyWhooshTechnologyService.MyWhoosh_"):
+            if (directory.is_dir() and 
+                    directory.name.startswith(MYWHOOSH_PREFIX)):
                 target_path = (
                         directory
                         / "LocalCache"
@@ -151,7 +153,8 @@ def get_fitfile_location() -> Path:
                 if target_path.is_dir():
                     return target_path
                 else:
-                    logger.error(f"Target path {target_path} does not exist. Check your MyWhoosh installation.")
+                    logger.error(f"Target path {target_path} does not exist."
+                                 "Check your MyWhoosh installation.")
                     sys.exit(1)
     else:
         raise RuntimeError("Unsupported operating system")
@@ -185,8 +188,9 @@ def get_credentials_for_garmin():
 
 def authenticate_to_garmin():
     """
-    Authenticate the user to Garmin by checking for existing tokens and resuming the session,
-    or prompting for credentials if no session exists or the session is expired.
+    Authenticate the user to Garmin by checking for existing tokens and 
+    resuming the session, or prompting for credentials if no session 
+    exists or the session is expired.
 
     Returns:
         None
@@ -238,10 +242,16 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
         if isinstance(message, (FileCreatorMessage, LapMessage)):
             continue
         if isinstance(message, RecordMessage):
-            message.remove_field(RecordTemperatureField.ID)  # Remove temperature field
-            cadence_values.append(message.cadence if message.cadence else 0)
-            power_values.append(message.power if message.power else 0)
-            heart_rate_values.append(message.heart_rate if message.heart_rate else 0)
+            message.remove_field(RecordTemperatureField.ID)  # Remove temp
+            cadence_values.append(message.cadence 
+                                  if message.cadence 
+                                  else 0)
+            power_values.append(message.power 
+                                if message.power 
+                                else 0)
+            heart_rate_values.append(message.heart_rate 
+                                     if message.heart_rate 
+                                     else 0)
         if isinstance(message, SessionMessage):
             # Add average values if missing
             if not message.avg_cadence:
@@ -273,7 +283,6 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
             heart_rate_values = []
         builder.add(message)
 
-    # Output the cleaned-up .fit file to the new file path (with timestamp suffix)
     out_file = builder.build()
     out_file.to_file(str(new_file_path))
     logger.info(f"Cleaned-up file saved as {new_file_path.name}")
@@ -281,33 +290,34 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
 
 def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
     """
-    Clean up the most recent .fit file in a directory and save it with a timestamped filename.
+    Clean up the most recent .fit file in a directory and save it 
+    with a timestamped filename.
 
     Args:
         fitfile_location (Path): The directory containing the .fit files.
 
     Returns:
-        Path: The path to the newly saved and cleaned .fit file, or an empty Path 
-        if no .fit file is found or if the path is invalid.
+        Path: The path to the newly saved and cleaned .fit file, 
+        or an empty Path if no .fit file is found or if the path is invalid.
     """
     if fitfile_location.is_dir():
-        logger.debug(f"Checking for .fit files in directory: {fitfile_location}")
+        logger.debug(f"Checking for .fit files in directory: "
+                     "{fitfile_location}")
         # Find all .fit files in the directory
         fit_files = list(fitfile_location.glob("*.fit"))
         if fit_files:
             logger.debug("Found the following .fit files:")
-            # Get the most recent file. MyWhoosh creates a .fit file for every version they publish
             fit_file = max(fit_files, key=lambda f: f.stat().st_mtime)
             timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-            # Generate the new filename with timestamp suffix
             new_filename = f"{fit_file.stem}_{timestamp}.fit"
             if not BACKUP_FOLDER.exists():
                 BACKUP_FOLDER.mkdir()
             new_file_path = BACKUP_FOLDER / new_filename
             logger.info(f"Cleaning up {new_file_path}")
             try:
-                cleanup_fit_file(fit_file, new_file_path)  # Clean and save with new filename
-                logger.info(f"Successfully cleaned {fit_file.name} and saved the file as {new_file_path.name}.")
+                cleanup_fit_file(fit_file, new_file_path)  
+                logger.info(f"Successfully cleaned {fit_file.name}" 
+                            "and saved the file as {new_file_path.name}.")
                 return new_file_path
             except Exception as e:
                 logger.error(f"Failed to process {fit_file.name}: {e}")
@@ -315,7 +325,8 @@ def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
             logger.info("No .fit files found.")
             return Path()
     else:
-        logger.info(f"The specified path is not a directory: {fitfile_location}")
+        logger.info(f"The specified path is not a directory:" 
+                    "{fitfile_location}")
         return Path()
 
 
@@ -342,8 +353,9 @@ def upload_fit_file_to_garmin(new_file_path: Path):
 
 def main():
     """
-    Main function to ensure required packages are installed, authenticate to Garmin,
-    clean and save the FIT file, and upload it to Garmin.
+    Main function to ensure required packages are installed, 
+    authenticate to Garmin, clean and save the FIT file, 
+    and upload it to Garmin.
 
     Returns:
         None
