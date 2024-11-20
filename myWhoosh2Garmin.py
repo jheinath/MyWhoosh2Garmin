@@ -6,11 +6,12 @@ Description:    Checks for MyNewActivity-<myWhooshVersion>.fit
                 Adds avg power and heartrade
                 Removes temperature
                 Creates backup for the file with a timestamp as a suffix
-Credits:        Garth by matin - for authenticating and uploading with Garmin Connect.
+Credits:        Garth by matin - for authenticating and uploading with 
+                Garmin Connect.
                 https://github.com/matin/garth
                 Fit_tool by mtucker - for parsing the fit file.
                 https://bitbucket.org/stagescycling/python_fit_tool.git/src
-                mw2gc by embeddedc - used as an example to fix the avg's. Helped a lot, thnx!
+                mw2gc by embeddedc - used as an example to fix the avg's. 
                 https://github.com/embeddedc/mw2gc
 """
 import os
