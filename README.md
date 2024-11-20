@@ -6,8 +6,6 @@
   
 <h2>🧐 Features</h2>
 
-Here're some of the project's best features:
-
 *   Finds the .fit files from your MyWhoosh installation.
 *   Fix the missing power & heart rate averages.
 *   Removes the temperature.
