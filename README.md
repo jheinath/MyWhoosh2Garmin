@@ -14,21 +14,22 @@
 
 <h2>🛠️ Installation Steps:</h2>
 
-<p>1. Download myWhoosh2Garmin.py to your filesystem</p>
+<p>1. Download myWhoosh2Garmin.py to your filesystem to a folder or your choosing.</p>
 
-<p>2. Go to the folder where you downloaded the script in a terminal</p>
+<p>2. Go to the folder where you downloaded the script in a terminal.</p>
 
-<p>3. Run it to set things up</p>
+<p>3. Run it to set things up.</p>
 
 ```
 python3 myWhoosh2Garmin.py
 ```
 
-<p>4. Choose your backup folder</p>
+<p>4. Choose your backup folder.</p>
 
 <p>5. Enter your Garmin Connect credentials</p>
 
-<p>6. Run the script when you're done riding or running</p>
+<p>6. Run the script when you're done riding or running.</p>
+<p>(7. Or see below to automate the process)</p>
 
 <h2>ℹ️ Automation tips</h2> 
 
