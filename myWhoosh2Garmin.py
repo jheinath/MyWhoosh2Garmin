@@ -110,11 +110,9 @@ from fit_tool.profile.messages.record_message import (
 from fit_tool.profile.messages.session_message import SessionMessage
 from fit_tool.profile.messages.lap_message import LapMessage
 
-
 TOKENS_PATH = Path(".garth")
 FILE_DIALOG_TITLE = "MyWhoosh2Garmin"
 MYWHOOSH_PREFIX_WINDOWS = "MyWhooshTechnologyService.MyWhoosh_"
-
 
 def get_fitfile_location() -> Path:
     """
@@ -205,10 +203,8 @@ def get_backup_path(json_file='backup_path.json') -> Path:
         logger.info(f"Backup path saved to {json_file}")
     return Path(backup_path)
 
-
 FITFILE_LOCATION = get_fitfile_location()
 BACKUP_FITFILE_LOCATION = get_backup_path()
-
 
 def get_credentials_for_garmin():
     """
@@ -336,6 +332,7 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
     builder.build().to_file(str(new_file_path))
     logger.info(f"Cleaned-up file saved as {new_file_path.name}")
 
+
 def get_most_recent_fit_file(fitfile_location: Path) -> Path:
     """Returns the most recent .fit file based on versioning in the filename."""
     fit_files = fitfile_location.glob("MyNewActivity-*.fit")
@@ -343,10 +340,12 @@ def get_most_recent_fit_file(fitfile_location: Path) -> Path:
                        tuple(map(int, re.findall(r'(\d+)', f.stem.split('-')[-1]))), reverse=True)
     return fit_files[0] if fit_files else Path()
 
+
 def generate_new_filename(fit_file: Path) -> str:
     """Generates a new filename with a timestamp."""
     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
     return f"{fit_file.stem}_{timestamp}.fit"
+
 
 def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
     """
