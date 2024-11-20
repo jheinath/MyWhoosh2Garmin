@@ -22,25 +22,63 @@ from getpass import getpass
 from pathlib import Path
 import importlib.util
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler('myWhoosh2Garmin.log')
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
 def get_pip_command():
+    """
+    Check if pip is available and return the pip command.
+
+    Returns:
+        list or None: A list containing the pip command if available, 
+                      otherwise None.
+    """
     try:
-        subprocess.check_call([sys.executable, "-m", "pip", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "--version"], 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE
+        )
         return [sys.executable, "-m", "pip"]  # pip is available
     except subprocess.CalledProcessError:
         return None  # pip is not available
 
 def install_package(package):
+    """
+    Install the specified package using pip.
+
+    Args:
+        package (str): The name of the package to install.
+
+    Returns:
+        None
+    """
     pip_command = get_pip_command()
     if pip_command:
         try:
-            print(f"Installing missing package: {package}")
-            subprocess.check_call(pip_command + ["install", package], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            logger.error(f"Installing missing package: {package}")
+            subprocess.check_call(
+                pip_command + ["install", package],
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE
+            )
         except subprocess.CalledProcessError as e:
-            print(f"Error installing {package}: {e}")
+            logger.error(f"Error installing {package}: {e}")
     else:
-        print("pip is not available. Unable to install packages.")
+        logger.info("pip is not available. Unable to install packages.")
 
 def ensure_packages():
+    """
+    Ensure all required packages are installed. If a package is missing,
+    it will attempt to install it.
+
+    Returns:
+        None
+    """
     required_packages = [
         "garth",
         "fit_tool",
@@ -63,18 +101,21 @@ from fit_tool.profile.messages.record_message import (
 from fit_tool.profile.messages.session_message import SessionMessage
 from fit_tool.profile.messages.lap_message import LapMessage
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler('myWhoosh2Garmin.log')
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-
 TOKENS_PATH = Path(".garth")
 BACKUP_FOLDER = Path("MyWhooshFitBackup")
-DEFAULT_ACTIVITY_NAME = "MyWhoosh"
+
 
 def get_fitfile_location() -> Path:
+    """
+    Get the location of the FIT file directory based on the operating system.
+
+    Returns:
+        Path: The path to the FIT file directory.
+
+    Raises:
+        RuntimeError: If the operating system is unsupported.
+        SystemExit: If the target path does not exist.
+    """
     if os.name == "posix":  # macOS and Linux
         target_path = (
             Path.home()
@@ -91,6 +132,9 @@ def get_fitfile_location() -> Path:
          )
         if target_path.is_dir():
             return target_path
+        else:
+            logger.error(f"Target path {target_path} does not exist. Check your MyWhoosh installation.")
+            sys.exit(1)
     elif os.name == "nt":  # Windows
         base_path = Path.home() / "AppData" / "Local" / "Packages"
         # Look for a folder starting with "MyWhooshTechnologyService.MyWhoosh_"
@@ -106,6 +150,9 @@ def get_fitfile_location() -> Path:
                 )
                 if target_path.is_dir():
                     return target_path
+                else:
+                    logger.error(f"Target path {target_path} does not exist. Check your MyWhoosh installation.")
+                    sys.exit(1)
     else:
         raise RuntimeError("Unsupported operating system")
         return None
@@ -115,6 +162,15 @@ FITFILE_LOCATION = get_fitfile_location()
 
 
 def get_credentials_for_garmin():
+    """
+    Prompt the user for Garmin credentials and authenticate using Garth.
+
+    Returns:
+        None
+
+    Exits:
+        Exits with status 1 if authentication fails.
+    """
     username = input("Username: ")
     password = getpass("Password: ")
     logger.info("Authenticating...")
@@ -128,6 +184,16 @@ def get_credentials_for_garmin():
 
 
 def authenticate_to_garmin():
+    """
+    Authenticate the user to Garmin by checking for existing tokens and resuming the session,
+    or prompting for credentials if no session exists or the session is expired.
+
+    Returns:
+        None
+
+    Exits:
+        Exits with status 1 if authentication fails.
+    """
     try:
         if TOKENS_PATH.exists():
             # Resume session if tokens file exists
@@ -147,8 +213,18 @@ def authenticate_to_garmin():
         sys.exit(1)
 
 
-# Cleanup the FIT file and save it as a new file with "<timestamp>" suffix
 def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
+    """
+    Clean up the FIT file by processing and removing unnecessary fields.
+    Also, calculate average values for cadence, power, and heart rate.
+
+    Args:
+        fit_file_path (Path): The path to the input FIT file.
+        new_file_path (Path): The path to save the processed FIT file.
+
+    Returns:
+        None
+    """
     builder = FitFileBuilder()
     fit_file = FitFile.from_file(str(fit_file_path))
     cadence_values = []
@@ -203,8 +279,17 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
     logger.info(f"Cleaned-up file saved as {new_file_path.name}")
 
 
-# Cleanup the .fit file and save it with timestamp suffix
 def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
+    """
+    Clean up the most recent .fit file in a directory and save it with a timestamped filename.
+
+    Args:
+        fitfile_location (Path): The directory containing the .fit files.
+
+    Returns:
+        Path: The path to the newly saved and cleaned .fit file, or an empty Path 
+        if no .fit file is found or if the path is invalid.
+    """
     if fitfile_location.is_dir():
         logger.debug(f"Checking for .fit files in directory: {fitfile_location}")
         # Find all .fit files in the directory
@@ -235,6 +320,15 @@ def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
 
 
 def upload_fit_file_to_garmin(new_file_path: Path):
+    """
+    Upload a .fit file to Garmin using the Garth client.
+
+    Args:
+        new_file_path (Path): The path to the .fit file to upload.
+
+    Returns:
+        None
+    """
     try:
         if new_file_path and new_file_path.exists():
             with open(new_file_path, "rb") as f:
@@ -245,8 +339,15 @@ def upload_fit_file_to_garmin(new_file_path: Path):
     except GarthHTTPError:
         logger.info("Duplicate activity found.")
 
+
 def main():
-    # Make sure packages are installed
+    """
+    Main function to ensure required packages are installed, authenticate to Garmin,
+    clean and save the FIT file, and upload it to Garmin.
+
+    Returns:
+        None
+    """
     ensure_packages()
     authenticate_to_garmin()
     new_file_path = cleanup_and_save_fit_file(FITFILE_LOCATION)
