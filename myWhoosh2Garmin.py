@@ -19,6 +19,7 @@ import json
 import subprocess
 import sys
 import logging
+from typing import List
 import tkinter as tk
 from datetime import datetime
 from getpass import getpass
@@ -125,19 +126,20 @@ def get_fitfile_location() -> Path:
         SystemExit: If the target path does not exist.
     """
     if os.name == "posix":  # macOS and Linux
-        target_path = (
-            Path.home()
-            / "Library"
-            / "Containers"
-            / "com.whoosh.whooshgame"
-            / "Data"
-            / "Library"
-            / "Application Support"
-            / "Epic"
-            / "MyWhoosh"
-            / "Content"
-            / "Data"
-        )
+        target_path = Path("fit/")
+        #target_path = (
+        #    Path.home()
+        #    / "Library"
+        #    / "Containers"
+        #    / "com.whoosh.whooshgame"
+        #    / "Data"
+        #    / "Library"
+        #    / "Application Support"
+        #    / "Epic"
+        #    / "MyWhoosh"
+        #    / "Content"
+        #    / "Data"
+        #)
         if target_path.is_dir():
             return target_path
         else:
@@ -255,6 +257,45 @@ def authenticate_to_garmin():
     except GarthException as e:
         logger.info(f"Authentication error: {e}")
         sys.exit(1)
+        
+
+def calculate_avg(values: iter) -> int:
+    """
+    Calculate the average of a list of values, returning 0 if the list is empty.
+
+    Args:
+        values (List[float]): The list of values to average.
+
+    Returns:
+        float: The average value or 0 if the list is empty.
+    """
+    return sum(values) / len(values) if values else 0
+    
+
+def append_value(values: List[int], message: object, field_name: str) -> None:
+    """
+    Appends a value to the 'values' list based on a field from 'message'.
+
+    Args:
+        values (List[int]): The list to append the value to.
+        message (object): The object that holds the field value.
+        field_name (str): The name of the field to retrieve from the message.
+
+    Returns:
+        None
+    """
+    value=getattr(message, field_name, None)
+    values.append(value if value else 0)
+
+
+def reset_values() -> tuple[List[int], List[int], List[int]]:
+    """
+    Resets and returns three empty lists for cadence, power, and heart rate values.
+
+    Returns:
+        tuple: A tuple containing three empty lists (cadence, power, and heart rate).
+    """
+    return  [], [], []
 
 
 def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
@@ -271,9 +312,7 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
     """
     builder = FitFileBuilder()
     fit_file = FitFile.from_file(str(fit_file_path))
-    cadence_values = []
-    power_values = []
-    heart_rate_values = []
+    cadence_values, power_values, heart_rate_values = reset_values()
 
     for record in fit_file.records:
         message = record.message
@@ -281,42 +320,24 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
             continue
         if isinstance(message, RecordMessage):
             message.remove_field(RecordTemperatureField.ID)
-            cadence_values.append(message.cadence 
-                                  if message.cadence 
-                                  else 0)
-            power_values.append(message.power 
-                                if message.power 
-                                else 0)
-            heart_rate_values.append(message.heart_rate 
-                                     if message.heart_rate 
-                                     else 0)
+            append_value(cadence_values, message, "cadence")
+            append_value(power_values, message, "power")
+            append_value(heart_rate_values, message, "heart_rate")
         if isinstance(message, SessionMessage):
             if not message.avg_cadence:
-                message.avg_cadence = (
-                    sum(cadence_values) / len(cadence_values)
-                    if cadence_values
-                    else 0
-                )
+                message.avg_cadence = calculate_avg(cadence_values)
             if not message.avg_power:
-                message.avg_power = (
-                    sum(power_values) / len(power_values)
-                    if power_values
-                    else 0
-                )
+                message.avg_power = calculate_avg(power_values)
             if not message.avg_heart_rate:
-                message.avg_heart_rate = (
-                    sum(heart_rate_values) / len(heart_rate_values)
-                    if heart_rate_values
-                    else 0
-                )
-            cadence_values = []
-            power_values = []
-            heart_rate_values = []
+                message.avg_heart_rate = calculate_avg(heart_rate_values)
+            cadence_values, power_values, heart_rate_values = reset_values()
         builder.add(message)
-    out_file = builder.build()
-    out_file.to_file(str(new_file_path))
+    builder.build().to_file(str(new_file_path))
     logger.info(f"Cleaned-up file saved as {new_file_path.name}")
 
+def get_most_recent_fit_file(fit_file_location: Path) -> Path:
+    """Returns the most recent .fit file in the directory."""
+    return max(fitfile_location.glob("*.fit"), key=lambda f: f.stat().st_mtime, default=None) or Path()
 
 def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
     """
