@@ -30,6 +30,7 @@ import importlib.util
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 log_file_path = os.path.join(script_dir, "myWhoosh2Garmin.log")
+json_file_path = os.path.join(script_dir, "backup_path.json")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 file_handler = logging.FileHandler(log_file_path)
