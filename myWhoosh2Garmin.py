@@ -28,9 +28,10 @@ from getpass import getpass
 from pathlib import Path
 import importlib.util
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-log_file_path = os.path.join(script_dir, "myWhoosh2Garmin.log")
-json_file_path = os.path.join(script_dir, "backup_path.json")
+
+script_dir = Path(__file__).resolve().parent
+log_file_path = script_dir / "myWhoosh2Garmin.log"
+json_file_path = script_dir /  "backup_path.json"
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 file_handler = logging.FileHandler(log_file_path)
@@ -113,7 +114,9 @@ from fit_tool.profile.messages.record_message import (
 from fit_tool.profile.messages.session_message import SessionMessage
 from fit_tool.profile.messages.lap_message import LapMessage
 
-TOKENS_PATH = Path(".garth")
+
+
+TOKENS_PATH = script_dir / '.garth'
 FILE_DIALOG_TITLE = "MyWhoosh2Garmin"
 MYWHOOSH_PREFIX_WINDOWS = "MyWhooshTechnologyService.MyWhoosh_"
 
@@ -172,7 +175,7 @@ def get_fitfile_location() -> Path:
         return Path()
 
 
-def get_backup_path(json_file='backup_path.json') -> Path:
+def get_backup_path(json_file=json_file_path) -> Path:
     """
     This function checks if a backup path already exists in a JSON file.
     If it does, it returns the stored path. If the file does not exist, 
@@ -224,7 +227,8 @@ def get_credentials_for_garmin():
     logger.info("Authenticating...")
     try:
         garth.login(username, password)
-        garth.save(".garth")
+        garth.save(TOKENS_PATH)
+        print()
         logger.info("Successfully authenticated!")
     except GarthHTTPError:
         logger.info("Wrong credentials. Please check username and password.")
@@ -245,7 +249,7 @@ def authenticate_to_garmin():
     """
     try:
         if TOKENS_PATH.exists():
-            garth.resume(".garth")
+            garth.resume(TOKENS_PATH)
             try:
                 logger.info(f"Authenticated as: {garth.client.username}")
             except GarthException:
