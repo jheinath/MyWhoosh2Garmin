@@ -38,92 +38,135 @@ What if you want to automate the whole process:
 AppleScript
 
 ```applescript
--- Start mywhoosh.app
-tell application "mywhoosh"
-    activate
+-- Define the text file path to store mywhoosh.app's location
+set textFilePath to (POSIX path of (path to me)) & "mywhoosh_path.txt"
+
+-- Read the stored path from the text file
+set mywhooshPath to ""
+try
+    set mywhooshPath to do shell script "cat " & quoted form of textFilePath
+on error
+    set mywhooshPath to ""
+end try
+
+-- Check if the stored path is valid
+if mywhooshPath is not "" then
+    try
+        do shell script "test -d " & quoted form of mywhooshPath
+    on error
+        set mywhooshPath to ""
+    end try
+end if
+
+-- Search for mywhoosh.app if no valid path is found
+if mywhooshPath is "" then
+    set mywhooshPath to do shell script "mdfind 'kMDItemFSName == \"mywhoosh.app\"' | head -n 1"
+    if mywhooshPath is "" then
+        return -- Exit if mywhoosh.app is not found
+    end if
+    -- Store the path in the text file
+    do shell script "echo " & quoted form of mywhooshPath & " > " & quoted form of textFilePath
+end if
+
+-- Run mywhoosh.app
+tell application "Finder"
+    open application file mywhooshPath
 end tell
 
--- Wait until the application quits
-repeat while application "mywhoosh" is running
-    delay 1
+-- Wait for mywhoosh to finish
+repeat
+    set appRunning to (do shell script "ps aux | grep -v grep | grep -c " & quoted form of "mywhoosh.app") as integer
+    if appRunning = 0 then exit repeat
+    delay 5
 end repeat
 
 -- Run the Python script
-do shell script "python3 ~/path/to/mywhoosh.py"
-
+do shell script "python3 /path/to/mywhoosh.py"
 ```
 Bash
 
 ```bash
 #!/bin/bash
 
-# Path to the mywhoosh.app application
-APP_PATH="/Applications/mywhoosh.app"
+# Define the path to store the `mywhoosh` executable location
+config_file="$(dirname "$0")/mywhoosh_path.txt"
 
-# Start the mywhoosh.app and wait for it to finish
-echo "Starting mywhoosh.app..."
-open -W "$APP_PATH"
-
-# Check if the application exited successfully
-if [ $? -eq 0 ]; then
-    echo "mywhoosh.app has finished. Now running Python script..."
-    # Run the Python script
-    python3 mywhoosh.py
+# Read the stored path from the text file, if it exists
+if [[ -f "$config_file" ]]; then
+    mywhoosh_path=$(<"$config_file")
 else
-    echo "mywhoosh.app encountered an error."
-    exit 1
+    mywhoosh_path=""
 fi
+
+# Check if the stored path is valid
+if [[ -n "$mywhoosh_path" && -e "$mywhoosh_path" ]]; then
+    echo "Using stored path: $mywhoosh_path"
+else
+    # Search for mywhoosh.exe if no valid path is found
+    echo "Searching for mywhoosh.exe..."
+    mywhoosh_path=$(find / -name "mywhoosh.exe" 2>/dev/null | head -n 1)
+    
+    if [[ -z "$mywhoosh_path" ]]; then
+        echo "mywhoosh.exe not found!"
+        exit 1
+    fi
+    
+    # Store the found path in the text file
+    echo "$mywhoosh_path" > "$config_file"
+    echo "Found and saved path: $mywhoosh_path"
+fi
+
+# Start mywhoosh.exe
+echo "Starting mywhoosh.exe..."
+"$mywhoosh_path" &
+
+# Wait for the process to finish
+echo "Waiting for mywhoosh.exe to finish..."
+while pgrep -f "$(basename "$mywhoosh_path")" >/dev/null; do
+    sleep 5
+done
+
+# Run the Python script
+echo "mywhoosh.exe finished. Running Python script..."
+python3 /path/to/mywhoosh.py
+
 ```
 <h3>Windows</h3>
 
-Windows .bat file
-```bash
-@echo off
-
-:: Search for mywhoosh.exe and store the path in a variable
-for /r "C:\" %%i in (mywhoosh.exe) do (
-    set "MYWHOOSH_PATH=%%i"
-    goto :found
-)
-
-:: If not found, exit with a message
-echo mywhoosh.exe not found!
-exit /b 1
-
-:found
-echo Found mywhoosh.exe at %MYWHOOSH_PATH%
-
-:: Start mywhoosh.exe
-start "" "%MYWHOOSH_PATH%"
-
-:: Wait for the application to finish
-echo Waiting for mywhoosh to finish...
-:loop
-tasklist /fi "imagename eq mywhoosh.exe" 2>NUL | find /I "mywhoosh.exe" >NUL
-if not errorlevel 1 (
-    timeout /t 5 /nobreak > NUL
-    goto loop
-)
-
-:: Once the app finishes, run the Python script
-echo mywhoosh has finished, running Python script...
-python C:\Path\to\mywhoosh.py
-```
 Windows .ps1 (PowerShell) file
 ```powershell
-# Search for mywhoosh.exe and store its path in a variable
-$mywhooshPath = Get-ChildItem -Path "C:\" -Filter "mywhoosh.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+# Define the JSON config file path
+$configFile = "$PSScriptRoot\mywhoosh_config.json"
 
-# If not found, exit with an error message
-if (-not $mywhooshPath) {
-    Write-Host "mywhoosh.exe not found!"
-    exit 1
+# Check if the JSON file exists and read the stored path
+if (Test-Path $configFile) {
+    $config = Get-Content -Path $configFile | ConvertFrom-Json
+    $mywhooshPath = $config.path
+} else {
+    $mywhooshPath = $null
 }
 
-Write-Host "Found mywhoosh.exe at $($mywhooshPath.FullName)"
+# Validate the stored path
+if (-not $mywhooshPath -or -not (Test-Path $mywhooshPath)) {
+    Write-Host "Searching for mywhoosh.exe..."
+    $mywhooshPath = Get-ChildItem -Path "C:\" -Filter "mywhoosh.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+
+    if (-not $mywhooshPath) {
+        Write-Host "mywhoosh.exe not found!"
+        exit 1
+    }
+
+    $mywhooshPath = $mywhooshPath.FullName
+
+    # Store the path in the JSON file
+    $config = @{ path = $mywhooshPath }
+    $config | ConvertTo-Json | Set-Content -Path $configFile
+}
+
+Write-Host "Found mywhoosh.exe at $mywhooshPath"
 
 # Start mywhoosh.exe
-Start-Process -FilePath $mywhooshPath.FullName
+Start-Process -FilePath $mywhooshPath
 
 # Wait for the application to finish
 Write-Host "Waiting for mywhoosh to finish..."
@@ -131,10 +174,9 @@ while (Get-Process -Name "mywhoosh" -ErrorAction SilentlyContinue) {
     Start-Sleep -Seconds 5
 }
 
-# Once the app finishes, run the Python script
+# Run the Python script
 Write-Host "mywhoosh has finished, running Python script..."
 python "C:\Path\to\mywhoosh.py"
-
 ```
 
 <h2>💻 Built with</h2>
