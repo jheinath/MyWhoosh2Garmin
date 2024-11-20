@@ -22,6 +22,7 @@ import logging
 import re
 from typing import List
 import tkinter as tk
+from tkinter import filedialog
 from datetime import datetime
 from getpass import getpass
 from pathlib import Path
@@ -127,20 +128,19 @@ def get_fitfile_location() -> Path:
         SystemExit: If the target path does not exist.
     """
     if os.name == "posix":  # macOS and Linux
-        target_path = Path("fit/")
-        #target_path = (
-        #    Path.home()
-        #    / "Library"
-        #    / "Containers"
-        #    / "com.whoosh.whooshgame"
-        #    / "Data"
-        #    / "Library"
-        #    / "Application Support"
-        #    / "Epic"
-        #    / "MyWhoosh"
-        #    / "Content"
-        #    / "Data"
-        #)
+        target_path = (
+           Path.home()
+           / "Library"
+           / "Containers"
+           / "com.whoosh.whooshgame"
+           / "Data"
+           / "Library"
+           / "Application Support"
+           / "Epic"
+           / "MyWhoosh"
+           / "Content"
+           / "Data"
+        )
         if target_path.is_dir():
             return target_path
         else:
@@ -167,8 +167,8 @@ def get_fitfile_location() -> Path:
                                  "Check your MyWhoosh installation.")
                     sys.exit(1)
     else:
-        raise RuntimeError("Unsupported operating system")
-        return None
+        logger.error("Unsupported OS")
+        return Path()
 
 
 def get_backup_path(json_file='backup_path.json') -> Path:
@@ -199,7 +199,7 @@ def get_backup_path(json_file='backup_path.json') -> Path:
         backup_path = filedialog.askdirectory(title=f"Select {FILE_DIALOG_TITLE} Directory")
         if not backup_path:
             logger.info("No directory selected, exiting.")
-            return None
+            return Path()
         with open(json_file, 'w') as f:
             json.dump({'backup_path': backup_path}, f)
         logger.info(f"Backup path saved to {json_file}")
