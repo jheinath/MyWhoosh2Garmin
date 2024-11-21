@@ -22,6 +22,8 @@
 
 ```
 python3 myWhoosh2Garmin.py
+or
+python myWhoosh2Garmin.py
 ```
 
 <p>3.1. First it will install Garth and Fit_tool package when you don't have it installed.
