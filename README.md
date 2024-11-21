@@ -113,54 +113,7 @@ end repeat
 -- Run the Python script
 do shell script "python3 /path/to/mywhoosh.py"
 ```
-Bash
 
-```bash
-#!/bin/bash
-
-# Define the path to store the `mywhoosh` executable location
-config_file="$(dirname "$0")/mywhoosh_path.txt"
-
-# Read the stored path from the text file, if it exists
-if [[ -f "$config_file" ]]; then
-    mywhoosh_path=$(<"$config_file")
-else
-    mywhoosh_path=""
-fi
-
-# Check if the stored path is valid
-if [[ -n "$mywhoosh_path" && -e "$mywhoosh_path" ]]; then
-    echo "Using stored path: $mywhoosh_path"
-else
-    # Search for mywhoosh.exe if no valid path is found
-    echo "Searching for mywhoosh.exe..."
-    mywhoosh_path=$(find / -name "mywhoosh.exe" 2>/dev/null | head -n 1)
-    
-    if [[ -z "$mywhoosh_path" ]]; then
-        echo "mywhoosh.exe not found!"
-        exit 1
-    fi
-    
-    # Store the found path in the text file
-    echo "$mywhoosh_path" > "$config_file"
-    echo "Found and saved path: $mywhoosh_path"
-fi
-
-# Start mywhoosh.exe
-echo "Starting mywhoosh.exe..."
-"$mywhoosh_path" &
-
-# Wait for the process to finish
-echo "Waiting for mywhoosh.exe to finish..."
-while pgrep -f "$(basename "$mywhoosh_path")" >/dev/null; do
-    sleep 5
-done
-
-# Run the Python script
-echo "mywhoosh.exe finished. Running Python script..."
-python3 /path/to/mywhoosh.py
-
-```
 <h3>Windows</h3>
 
 Windows .ps1 (PowerShell) file
