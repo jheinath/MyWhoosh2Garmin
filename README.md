@@ -55,7 +55,7 @@ Password:
 2024-11-21 10:08:37,107 Found the most recent .fit file: MyNewActivity-3.8.5.fit.
 2024-11-21 10:08:37,107 Cleaning up <YOUR_BACKUP_FOLDER>yNewActivity-3.8.5_2024-11-21_100837.fit.
 2024-11-21 10:08:37,855 Cleaned-up file saved as <YOUR_BACKUP_FOLDER>MyNewActivity-3.8.5_2024-11-21_100837.fit
-2024-11-21 10:08:37,871 Successfully cleaned MyNewActivity-3.8.5.fitand saved it as MyNewActivity-3.8.5_2024-11-21_100837.fit.
+2024-11-21 10:08:37,871 Successfully cleaned MyNewActivity-3.8.5.fit and saved it as MyNewActivity-3.8.5_2024-11-21_100837.fit.
 2024-11-21 10:08:38,408 Duplicate activity found on Garmin Connect.
 ```
 
