@@ -65,7 +65,7 @@ Password:
 
 What if you want to automate the whole process:
 <h3>MacOS</h3>
-AppleScript
+AppleScript (need to test further)
 
 ```applescript
 -- Define the text file path to store mywhoosh.app's location
