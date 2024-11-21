@@ -179,7 +179,7 @@ if (Test-Path $configFile) {
 # Validate the stored path
 if (-not $mywhooshPath -or -not (Test-Path $mywhooshPath)) {
     Write-Host "Searching for mywhoosh.exe..."
-    $mywhooshPath = Get-ChildItem -Path "C:\" -Filter "mywhoosh.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+    $mywhooshPath = Get-ChildItem -Path "C:\PROGRAM FILES" -Filter "mywhoosh.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
 
     if (-not $mywhooshPath) {
         Write-Host "mywhoosh.exe not found!"
@@ -206,7 +206,7 @@ while (Get-Process -Name "mywhoosh" -ErrorAction SilentlyContinue) {
 
 # Run the Python script
 Write-Host "mywhoosh has finished, running Python script..."
-python "C:\Path\to\mywhoosh.py"
+python "C:\Path\to\myWhoosh2Garmin.py"
 ```
 
 <h2>💻 Built with</h2>
