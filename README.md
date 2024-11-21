@@ -34,6 +34,7 @@ Successfully installed fit_tool-0.9.13
 ```
   
 <p>4. Choose your backup folder.</p>
+
 ![image](https://github.com/user-attachments/assets/d1540291-4e6d-488e-9dcf-8d7b68651103)
 
 <p>5. Enter your Garmin Connect credentials</p>
