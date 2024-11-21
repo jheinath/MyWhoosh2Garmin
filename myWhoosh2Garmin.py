@@ -417,7 +417,7 @@ def cleanup_and_save_fit_file(fitfile_location: Path) -> Path:
 
     try:
         cleanup_fit_file(fit_file, new_file_path)  
-        logger.info(f"Successfully cleaned {fit_file.name}"
+        logger.info(f"Successfully cleaned {fit_file.name} "
                     f"and saved it as {new_file_path.name}.")
         return new_file_path
     except Exception as e:
