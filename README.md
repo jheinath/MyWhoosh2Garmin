@@ -18,7 +18,7 @@
 
 <p>2. Go to the folder where you downloaded the script in a shell.</p>
 
-MacOS: Terminal App
+MacOS: Terminal of your choice. 
 
 Windows: Start > Run > cmd or Start > Run > powershell
 
