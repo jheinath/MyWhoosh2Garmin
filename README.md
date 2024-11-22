@@ -16,7 +16,11 @@
 
 <p>1. Download myWhoosh2Garmin.py to your filesystem to a folder or your choosing.</p>
 
-<p>2. Go to the folder where you downloaded the script in a terminal.</p>
+<p>2. Go to the folder where you downloaded the script in a shell.</p>
+
+MacOS: Terminal App
+
+Windows: Start > Run > cmd or Start > Run > powershell
 
 <p>3. Run it to set things up.</p>
 
@@ -36,6 +40,14 @@ Successfully installed fit_tool-0.9.13
 ```
   
 <p>4. Choose your backup folder.</p>
+
+<h3>MacOS</h3>
+
+![image](https://github.com/user-attachments/assets/2c6c1072-bacf-4f0c-8861-78f62bf51648)
+
+
+<h3>Windows</h3>
+
 
 ![image](https://github.com/user-attachments/assets/d1540291-4e6d-488e-9dcf-8d7b68651103)
 
