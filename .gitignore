@@ -12,6 +12,7 @@ MyWhooshFitBackup/
 *.log
 *.json
 .idea/
+.gitignore
 # Distribution / packaging
 .Python
 build/
