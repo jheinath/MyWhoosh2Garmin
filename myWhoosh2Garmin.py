@@ -186,8 +186,8 @@ def get_fitfile_location() -> Path:
             if target_path.is_dir():
                 return target_path
             else:
-                raise FileNotFoundErrorr(f"No valid MyWhoosh directory found in {target_path}")
-        except FileNoFoundError as e:
+                raise FileNotFoundError(f"No valid MyWhoosh directory found in {target_path}")
+        except FileNotFoundError as e:
                 logger.error(str(e))
         except PermissionError as e:
                 logger.error(f"Permission denied: {e}")
