@@ -124,7 +124,7 @@ Start-Process -FilePath $mywhooshPath
 
 # Wait for the application to finish
 Write-Host "Waiting for $myWhooshApp to finish..."
-while ($process = ps -ax | grep -i "Whoosh" | grep -v "grep") {
+while ($process = ps -ax | grep -i $myWhooshApp | grep -v "grep") {
     Write-Output $process
     Start-Sleep -Seconds 5
 }
