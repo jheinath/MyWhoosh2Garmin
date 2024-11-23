@@ -84,6 +84,7 @@ def install_package(package):
     else:
         logger.debug("pip is not available. Unable to install packages.")
 
+
 def ensure_packages():
     """Ensure all required packages are installed and tracked."""
     required_packages = ["garth", "fit_tool"]
@@ -184,10 +185,16 @@ def get_fitfile_location() -> Path:
                 )
             if target_path.is_dir():
                 return target_path
-        except:
-            logger.error(f"Target path {base_path} does not exist. "
-                        "Check your MyWhoosh installation.")
-            sys.exit(1)
+            else:
+                raise FileNotFoundErrorr(f"No valid MyWhoosh directory found in {target_path}")
+        except FileNoFoundError as e:
+                logger.error(str(e))
+        except PermissionError as e:
+                logger.error(f"Permission denied: {e}")
+        except Exception as e:
+                logger.error(f"Unexpected error: {e}")
+        finally:
+                sys.exit(1)
     else:
         logger.error("Unsupported OS")
         return Path()
