@@ -15,6 +15,9 @@
 <h2>🛠️ Installation Steps:</h2>
 
 <p>1. Download myWhoosh2Garmin.py to your filesystem to a folder or your choosing.</p>
+<p>2. Set up a venv
+  TODO: add howto
+</p>
 
 <p>2. Go to the folder where you downloaded the script in a shell.</p>
 
@@ -137,55 +140,12 @@ python3 "<PATH_WHERE_YOUR_SCRIPT_IS_LOCATED>/MyWhoosh2Garmin/myWhoosh2Garmin.py"
 AppleScript (need to test further)
 
 ```applescript
--- Define the text file path to store mywhoosh.app's location
-set textFilePath to (POSIX path of (path to me)) & "mywhoosh_path.txt"
-
--- Read the stored path from the text file
-set mywhooshPath to ""
-try
-    set mywhooshPath to do shell script "cat " & quoted form of textFilePath
-on error
-    set mywhooshPath to ""
-end try
-
--- Check if the stored path is valid
-if mywhooshPath is not "" then
-    try
-        do shell script "test -d " & quoted form of mywhooshPath
-    on error
-        set mywhooshPath to ""
-    end try
-end if
-
--- Search for mywhoosh.app if no valid path is found
-if mywhooshPath is "" then
-    set mywhooshPath to do shell script "mdfind 'kMDItemFSName == \"mywhoosh.app\"' | head -n 1"
-    if mywhooshPath is "" then
-        return -- Exit if mywhoosh.app is not found
-    end if
-    -- Store the path in the text file
-    do shell script "echo " & quoted form of mywhooshPath & " > " & quoted form of textFilePath
-end if
-
--- Run mywhoosh.app
-tell application "Finder"
-    open application file mywhooshPath
-end tell
-
--- Wait for mywhoosh to finish
-repeat
-    set appRunning to (do shell script "ps aux | grep -v grep | grep -c " & quoted form of "mywhoosh.app") as integer
-    if appRunning = 0 then exit repeat
-    delay 5
-end repeat
-
--- Run the Python script
-do shell script "python3 /path/to/mywhoosh.py"
+TODO: needs more work
 ```
 
 <h3>Windows</h3>
 
-Windows .ps1 (PowerShell) file
+Windows .ps1 (PowerShell) file (Untested on Windows)
 ```powershell
 # Define the JSON config file path
 $configFile = "$PSScriptRoot\mywhoosh_config.json"
@@ -236,6 +196,6 @@ python "C:\Path\to\myWhoosh2Garmin.py"
 Technologies used in the project:
 
 * Neovim
-*   Garth
+*   <a href="https://github.com/matin/garth">Garth</a>
 *   tKinter
-*   Fit\_tool
+*   <a href="https://bitbucket.org/stagescycling/fit_tool/src/main/">Fit\_tool</a>
