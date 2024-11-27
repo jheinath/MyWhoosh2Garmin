@@ -6,7 +6,7 @@
 
 
 <h2><b>Update 27/11/2024 10:09 - Fix found</b></h2>
-There is a discripency between UserAgents. Quick fix is to update the http.py file in the garth package dir on your system.
+There is a discripancy between UserAgents. Quick fix is to update the http.py file in the garth package dir on your system.
 Source: https://github.com/matin/garth/pull/74
 Then we wait until garth package is updated.
 
