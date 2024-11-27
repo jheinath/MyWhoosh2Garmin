@@ -1,8 +1,9 @@
 <h1 align="center" id="title">myWhoosh2Garmin</h1>
 
+<p id="description">Python script to upload MyWhoosh .fit files to Garmin Connect for both MacOS and Windows.</p>
 
 <h2><b>Update 27/11/2024 09:40- Garmin changed some things on their end. Looking into a solution but for now, it's back to manual uploading. 🙄</b></h2>
-<p id="description">Python script to upload MyWhoosh .fit files to Garmin Connect for both MacOS and Windows.</p>
+
 
 <h2><b>Update 27/11/2024 10:09 - Fix found</b></h2>
 There is a discripency between UserAgents. Quick fix is to update the http.py file in the garth package dir on your system.
