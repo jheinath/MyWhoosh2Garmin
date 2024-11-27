@@ -27,7 +27,7 @@ USER_AGENT = {"User-Agent": "GCM-iOS-5.7.2.1",}
 ```
   
   
-<h2>Features</h2>
+<h2>🧐Features</h2>
 
 *   Finds the .fit files from your MyWhoosh installation.
 *   Fix the missing power & heart rate averages.
