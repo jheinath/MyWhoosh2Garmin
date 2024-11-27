@@ -1,10 +1,12 @@
 <h1 align="center" id="title">myWhoosh2Garmin</h1>
 
+
+<h2><b>Update 27/11/2024 - Garmin changed some things on their end. Looking into a solution but for now, it's back to manual uploading. 🙄</b></h2>
 <p id="description">Python script to upload MyWhoosh .fit files to Garmin Connect for both MacOS and Windows.</p>
 
   
   
-<h2>🧐 Features</h2>
+<h2>Features</h2>
 
 *   Finds the .fit files from your MyWhoosh installation.
 *   Fix the missing power & heart rate averages.
