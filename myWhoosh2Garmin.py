@@ -193,8 +193,6 @@ def get_fitfile_location() -> Path:
                 logger.error(f"Permission denied: {e}")
         except Exception as e:
                 logger.error(f"Unexpected error: {e}")
-        finally:
-                sys.exit(1)
     else:
         logger.error("Unsupported OS")
         return Path()
