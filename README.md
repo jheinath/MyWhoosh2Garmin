@@ -2,6 +2,16 @@
 
 <p id="description">Python script to upload MyWhoosh .fit files to Garmin Connect for both MacOS and Windows.</p>
 
+<h2>2/12/2024 - Garth updated.</h2>
+For existing users
+
+```python
+pip install --upgrade garth
+pip3 install --upgrade garth
+```
+
+New users will install the new version right away
+
 <h2><b>Update 27/11/2024 09:40- Garmin changed some things on their end. Looking into a solution but for now, it's back to manual uploading. 🙄</b></h2>
 
 
