@@ -135,7 +135,8 @@ except ImportError as e:
 
 TOKENS_PATH = SCRIPT_DIR / '.garth'
 FILE_DIALOG_TITLE = "MyWhoosh2Garmin"
-MYWHOOSH_PREFIX_WINDOWS = "MyWhooshTechnologyService.MyWhoosh_"
+# Fix for https://github.com/JayQueue/MyWhoosh2Garmin/issues/2
+MYWHOOSH_PREFIX_WINDOWS = "MyWhooshTechnologyService." 
 
 
 def get_fitfile_location() -> Path:
