@@ -48,34 +48,40 @@ USER_AGENT = {"User-Agent": "GCM-iOS-5.7.2.1",}
 <h2>🛠️ Installation Steps:</h2>
 
 <p>1. Download myWhoosh2Garmin.py to your filesystem to a folder or your choosing.</p>
-<p>2. Set up a venv
-  TODO: add howto
-</p>
 
 <p>2. Go to the folder where you downloaded the script in a shell.</p>
 
-MacOS: Terminal of your choice. 
+- <b>MacOS:</b> Terminal of your choice. 
+- <b>Windows:</b> Start > Run > cmd or Start > Run > powershell
 
-Windows: Start > Run > cmd or Start > Run > powershell
+<p>3. Install `pipenv` (if not already installed):</p>
 
-<p>3. Run it to set things up.</p>
+```
+pip3 install pipenv
+or
+pip install pipenv
+```
+<p>4. Install dependencies in a virtual envioronment:</p>
+
+```
+pipenv install
+```
+
+<p>5. Activate the virtual environment:</p>
+
+```
+pipenv shell
+```
+
+<p>5. Run the script:</p>
 
 ```
 python3 myWhoosh2Garmin.py
 or
 python myWhoosh2Garmin.py
 ```
-
-<p>3.1. First it will install Garth and Fit_tool package when you don't have it installed.
-
-```
-Installing collected packages: garth
-Successfully installed garth-0.4.46
-Installing collected packages: fit_tool
-Successfully installed fit_tool-0.9.13
-```
   
-<p>4. Choose your backup folder.</p>
+<p>6. Choose your backup folder.</p>
 
 <h3>MacOS</h3>
 
@@ -87,7 +93,7 @@ Successfully installed fit_tool-0.9.13
 
 ![image](https://github.com/user-attachments/assets/d1540291-4e6d-488e-9dcf-8d7b68651103)
 
-<p>5. Enter your Garmin Connect credentials</p>
+<p>7. Enter your Garmin Connect credentials</p>
 
 ```
 2024-11-21 10:08:04,014 No existing session. Please log in.
@@ -98,7 +104,7 @@ Password:
 2024-11-21 10:08:37,107 Successfully authenticated!
 ```
 
-<p>6. Run the script when you're done riding or running.</p>
+<p>8. Run the script when you're done riding or running.</p>
 
 ```
 2024-11-21 10:08:37,107 Checking for .fit files in directory: <YOUR_MYWHOOSH_DIR_WITH_FITFILES>.
@@ -109,7 +115,7 @@ Password:
 2024-11-21 10:08:38,408 Duplicate activity found on Garmin Connect.
 ```
 
-<p>(7. Or see below to automate the process)</p>
+<p>(9. Or see below to automate the process)</p>
 
 <h2>ℹ️ Automation tips</h2> 
 
