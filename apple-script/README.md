@@ -36,5 +36,5 @@ end quit
   <li>Please select xyz as an export option.</li>
   <li>Store the app at a location of your choice.</li>
   <li>Before running the script, you need to grant the app full access to your hard drive. Otherwise, you will be prompted each time to allow access when the myWhoosh2Garmin is executed. Please search the web for a guide, given it slightly depends on your Mac OS version.</li>
-  <li>Now you can run t</li>
+  <li>Now you can run the App and start riding on My Whoosh.</li>
 </ol>
