@@ -40,5 +40,5 @@ end quit
   </li>
   <li>Before running the script, you need to grant the app full access to your hard drive. Otherwise, you will be prompted each time to allow access when the myWhoosh2Garmin is executed. Please search the web for a guide, given it slightly depends on your Mac OS version. See screenshot of my setup (I gave my App the My Whoosh icon): <img width="827" alt="Xnip2024-12-30_22-28-22" src="https://github.com/user-attachments/assets/c4004375-36ef-42c1-936f-99eba47639c6" />
   </li>
-  <li>Now you can run the App and start riding on My Whoosh.</li>
+  <li>Now you can run the App and start riding on My Whoosh. After you exit My Whoosh the Garmin upload script will be exectuded.</li>
 </ol>
