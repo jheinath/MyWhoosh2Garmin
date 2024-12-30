@@ -36,10 +36,8 @@ end quit
   <li>Please select File Format <code>Application</code>.</li>
   <li>Please select <code>Stay open after run handler</code> an export option.</li>
   <li>Store the app at a location of your choice.
-  ![image](https://github.com/user-attachments/assets/0f027429-12dc-4ce4-ba0c-9395e6732fbd)</li>
-  
-
+	<img width="1100" alt="Xnip2024-12-30_22-16-55" src="https://github.com/user-attachments/assets/54fa1ab0-2ed3-46a0-808e-1420c29c7736" />
+  </li>
   <li>Before running the script, you need to grant the app full access to your hard drive. Otherwise, you will be prompted each time to allow access when the myWhoosh2Garmin is executed. Please search the web for a guide, given it slightly depends on your Mac OS version.</li>
   <li>Now you can run the App and start riding on My Whoosh.</li>
 </ol>
-![image](https://github.com/user-attachments/assets/0f027429-12dc-4ce4-ba0c-9395e6732fbd)
