@@ -347,8 +347,8 @@ def cleanup_fit_file(fit_file_path: Path, new_file_path: Path) -> None:
 
     for record in fit_file.records:
         message = record.message
-        #        if isinstance(message, (FileCreatorMessage, LapMessage)):
-        #    continue
+        if isinstance(message, (LapMessage)):
+            continue
         if isinstance(message, RecordMessage):
             message.remove_field(RecordTemperatureField.ID)
             append_value(cadence_values, message, "cadence")
